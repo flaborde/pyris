@@ -9,3 +9,4 @@ set -e
 createdb pyris
 psql pyris -c "CREATE EXTENSION postgis;"
 echo "The database 'pyris' has been created."
+

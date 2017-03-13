@@ -20,3 +20,4 @@ psql pyris -c "DELETE FROM geoiris WHERE gid IN (SELECT gid FROM (SELECT gid,RAN
 echo "######################################################"
 echo "There are"
 psql pyris -c 'SELECT COUNT(1) FROM geoiris;'
+
