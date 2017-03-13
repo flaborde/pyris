@@ -1,6 +1,21 @@
 #!/bin/bash
+IRIS_URL="https://www.data.gouv.fr/s/resources/contour-des-iris-insee-tout-en-un/20150428-161348/iris-2013-01-01.zip"
+IRIS_ZIPFILE="${IRIS_URL##*/}"
+IRIS_SHPFILE="${IRIS_ZIPFILE%.zip}.shp"
 
 set -e
+
+wget "$IRIS_URL"
+unzip "$IRIS_ZIPFILE" \
+rm "$IRIS_ZIPFILE"
+
+# You need to have a CREATEDB and SUPERUSER roles.
+# If it's not the case
+#   > ALTER ROLE <your_username> CREATEDB SUPERUSER;
+# in a psql shell as a 'postgres' user.
+createdb pyris
+psql pyris -c "CREATE EXTENSION postgis;"
+echo "The database 'pyris' has been created."
 
 # You need to install PostGIS
 # Suppose the database 'pyris' exists
@@ -8,7 +23,7 @@ set -e
 echo "######################################################"
 echo "Use 'shp2pgsql' to insert some data from the shp file"
 echo "######################################################"
-shp2pgsql -D -W latin1 -I -s 4326 iris-2013-01-01.shp geoiris | psql -d pyris
+shp2pgsql -D -W latin1 -I -s 4326 "$IRIS_SHPFILE" geoiris | psql -d pyris
 
 # don't know why but there are several duplications in the shapefile (same geometries for the same IRIS)
 echo "######################################################"
