@@ -6,7 +6,7 @@ IRIS_SHPFILE="${IRIS_ZIPFILE%.zip}.shp"
 set -e
 
 wget "$IRIS_URL"
-unzip "$IRIS_ZIPFILE" \
+unzip "$IRIS_ZIPFILE"
 rm "$IRIS_ZIPFILE"
 
 # You need to have a CREATEDB and SUPERUSER roles.
