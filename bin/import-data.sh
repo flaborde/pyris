@@ -5,7 +5,7 @@ IRIS_SHPFILE="${IRIS_ZIPFILE%.zip}.shp"
 
 set -e
 
-wget "$IRIS_URL"
+wget -nv "$IRIS_URL"
 unzip "$IRIS_ZIPFILE"
 rm "$IRIS_ZIPFILE"
 
