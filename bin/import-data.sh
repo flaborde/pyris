@@ -1,13 +1,15 @@
 #!/bin/bash
 IRIS_URL="https://www.data.gouv.fr/s/resources/contour-des-iris-insee-tout-en-un/20150428-161348/iris-2013-01-01.zip"
 IRIS_ZIPFILE="${IRIS_URL##*/}"
-IRIS_SHPFILE="${IRIS_ZIPFILE%.zip}.shp"
+IRIS_FILE="${IRIS_ZIPFILE%.zip}"
+DATADIR="$(basename "$0")/../data/"
 
 GOSU=""
 [ "$1" == "--gosu-postgres" ] && GOSU=(gosu postgres)
 
 set -e
 
+cd "$DATADIR"
 wget -nv "$IRIS_URL"
 unzip "$IRIS_ZIPFILE"
 rm "$IRIS_ZIPFILE"
@@ -26,7 +28,7 @@ echo "The database 'pyris' has been created."
 echo "######################################################"
 echo "Use 'shp2pgsql' to insert some data from the shp file"
 echo "######################################################"
-"${GOSU[@]}" shp2pgsql -D -W latin1 -I -s 4326 "$IRIS_SHPFILE" geoiris | "${GOSU[@]}" psql -d pyris
+"${GOSU[@]}" shp2pgsql -D -W latin1 -I -s 4326 "$IRIS_FILE" geoiris | "${GOSU[@]}" psql -d pyris
 
 # don't know why but there are several duplications in the shapefile (same geometries for the same IRIS)
 echo "######################################################"
@@ -38,4 +40,6 @@ echo "######################################################"
 echo "######################################################"
 echo "There are"
 "${GOSU[@]}" psql pyris -c 'SELECT COUNT(1) FROM geoiris;'
+
+rm "$IRIS_FILE.shp" "$IRIS_FILE.dbf" "$IRIS_FILE.prj" "$IRIS_FILE.shx"
 
