@@ -4,7 +4,7 @@ IRIS_ZIPFILE="${IRIS_URL##*/}"
 IRIS_SHPFILE="${IRIS_ZIPFILE%.zip}.shp"
 
 GOSU=""
-[ -x "$(which gosu)" ] && GOSU=(gosu postgres)
+[ "$1" == "--gosu-postgres" ] && GOSU=(gosu postgres)
 
 set -e
 
