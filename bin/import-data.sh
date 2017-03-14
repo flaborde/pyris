@@ -3,6 +3,9 @@ IRIS_URL="https://www.data.gouv.fr/s/resources/contour-des-iris-insee-tout-en-un
 IRIS_ZIPFILE="${IRIS_URL##*/}"
 IRIS_SHPFILE="${IRIS_ZIPFILE%.zip}.shp"
 
+GOSU=""
+[ -x "$(which gosu)" ] && GOSU=(gosu postgres)
+
 set -e
 
 wget -nv "$IRIS_URL"
@@ -13,8 +16,8 @@ rm "$IRIS_ZIPFILE"
 # If it's not the case
 #   > ALTER ROLE <your_username> CREATEDB SUPERUSER;
 # in a psql shell as a 'postgres' user.
-createdb pyris
-psql pyris -c "CREATE EXTENSION postgis;"
+"${GOSU[@]}" createdb pyris
+"${GOSU[@]}" psql pyris -c "CREATE EXTENSION postgis;"
 echo "The database 'pyris' has been created."
 
 # You need to install PostGIS
@@ -23,16 +26,16 @@ echo "The database 'pyris' has been created."
 echo "######################################################"
 echo "Use 'shp2pgsql' to insert some data from the shp file"
 echo "######################################################"
-shp2pgsql -D -W latin1 -I -s 4326 "$IRIS_SHPFILE" geoiris | psql -d pyris
+"${GOSU[@]}" shp2pgsql -D -W latin1 -I -s 4326 "$IRIS_SHPFILE" geoiris | psql -d pyris
 
 # don't know why but there are several duplications in the shapefile (same geometries for the same IRIS)
 echo "######################################################"
 echo "Data cleaning: remove some duplicated rows"
 echo "######################################################"
-psql pyris -c "DELETE FROM geoiris WHERE gid IN (SELECT gid FROM (SELECT gid,RANK() OVER (PARTITION BY dcomiris ORDER BY gid) FROM geoiris) AS X WHERE X.rank > 1);
+"${GOSU[@]}" psql pyris -c "DELETE FROM geoiris WHERE gid IN (SELECT gid FROM (SELECT gid,RANK() OVER (PARTITION BY dcomiris ORDER BY gid) FROM geoiris) AS X WHERE X.rank > 1);
 "
 
 echo "######################################################"
 echo "There are"
-psql pyris -c 'SELECT COUNT(1) FROM geoiris;'
+"${GOSU[@]}" psql pyris -c 'SELECT COUNT(1) FROM geoiris;'
 
