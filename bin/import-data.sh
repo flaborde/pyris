@@ -26,7 +26,7 @@ echo "The database 'pyris' has been created."
 echo "######################################################"
 echo "Use 'shp2pgsql' to insert some data from the shp file"
 echo "######################################################"
-"${GOSU[@]}" shp2pgsql -D -W latin1 -I -s 4326 "$IRIS_SHPFILE" geoiris | psql -d pyris
+"${GOSU[@]}" shp2pgsql -D -W latin1 -I -s 4326 "$IRIS_SHPFILE" geoiris | "${GOSU[@]}" psql -d pyris
 
 # don't know why but there are several duplications in the shapefile (same geometries for the same IRIS)
 echo "######################################################"
