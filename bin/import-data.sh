@@ -2,7 +2,7 @@
 IRIS_URL="https://www.data.gouv.fr/s/resources/contour-des-iris-insee-tout-en-un/20150428-161348/iris-2013-01-01.zip"
 IRIS_ZIPFILE="${IRIS_URL##*/}"
 IRIS_FILE="${IRIS_ZIPFILE%.zip}"
-DATADIR="$(dirname "$0")/../data/"
+DATADIR="$(pushd "$(dirname "$0")" > /dev/null; cd ../data/; pwd)"
 
 GOSU=""
 [ "$1" == "--gosu-postgres" ] && GOSU=(gosu postgres)
