@@ -40,8 +40,11 @@ def _query(q, params=None):
     Only fetch one result
     """
     Logger.debug("processing query '%s'", q)
-    with psycopg2.connect(database="pyris",
-                          user=DATABASE['USER']) as cnx:
+    with psycopg2.connect(dbname=DATABASE['DBNAME'],
+                          user=DATABASE['USER'],
+                          password=DATABASE['PASSWORD'],
+                          host=DATABASE['HOST'],
+                          port=DATABASE['PORT']) as cnx:
         with cnx.cursor() as cu:
             if params is not None:
                 cu.execute(q, params)

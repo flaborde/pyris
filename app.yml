@@ -4,8 +4,11 @@ flask:
     LOG_LEVEL: debug
 
 database:
+    # DBNAME: DBNAME
     USER: USERNAME
     # PASSWORD: PASSWORD
+    # HOST: HOST
+    # PORT: PORT
 
 uwsgi:
     master: true
