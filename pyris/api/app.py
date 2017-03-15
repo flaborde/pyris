@@ -34,6 +34,12 @@ iris_code_parser = api.parser()
 iris_code_parser.add_argument("limit", required=False, default=10, dest='limit',
                               location='args', help='Limit')
 
+coord_parser = api.parser()
+coord_parser.add_argument("lat", required=True, dest='lat', location='args',
+                            help='Latitude')
+coord_parser.add_argument("lng", required=True, dest='lng', location='args',
+                            help='Longitude')
+
 address_parser = api.parser()
 address_parser.add_argument("q", required=True, dest='q', location='args',
                             help='Query')
@@ -44,12 +50,14 @@ IRIS_MODEL = OrderedDict([('iris', fields.String),
                           ('name', fields.String),
                           ('complete_code', fields.String),
                           ('type', fields.String)])
-ADDRESS_MODEL = IRIS_MODEL.copy()
+COORD_MODEL = IRIS_MODEL.copy()
+COORD_MODEL["lon"] = fields.Float
+COORD_MODEL["lat"] = fields.Float
+ADDRESS_MODEL = COORD_MODEL.copy()
 ADDRESS_MODEL["address"] = fields.String
-ADDRESS_MODEL["lon"] = fields.Float
-ADDRESS_MODEL["lat"] = fields.Float
 
 iris_fields = api.model('Iris', IRIS_MODEL)
+coord_fields = api.model('Coord', COORD_MODEL)
 address_fields = api.model('Address', ADDRESS_MODEL)
 
 
@@ -87,6 +95,20 @@ class CompleteIrisCode(Resource):
         return iris
 
 
+@api.route("/coord/")
+class IrisFromCoord(Resource):
+    @api.doc(parser=coord_parser,
+             description="Look for an IRIS for a specific coordinate.")
+    @api.marshal_with(coord_fields, envelope='coord')
+    def get(self):
+        args = coord_parser.parse_args()
+        lat = args['lat']
+        lng = args['lng']
+        Logger.info("Look for IRIS for coordinate '%s, %s'", lat, lng)
+        res = extract.iris_from_coordinate(lng, lat)
+        return res
+
+
 @api.route("/search/")
 class IrisFromAddress(Resource):
     @api.doc(parser=address_parser,
@@ -104,3 +126,4 @@ class IrisFromAddress(Resource):
         res = extract.iris_from_coordinate(coord['lon'], coord['lat'])
         res.update(coord)
         return res
+

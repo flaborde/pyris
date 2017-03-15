@@ -109,5 +109,7 @@ def iris_from_coordinate(lon, lat):
     res = _query(query_coordinate, (lon, lat))
     Logger.debug("res: %s", res)
     if res:
-        return _iris_fields(res[0])
+        fields = _iris_fields(res[0]).copy()
+        fields.update({"lon": lon, "lat": lat})
+        return fields
     return res
