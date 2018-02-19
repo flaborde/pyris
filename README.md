@@ -15,18 +15,28 @@ specific codes and data related to more than 50,000 districts, built by the
 
 IRIS shapes at https://www.data.gouv.fr/fr/datasets/contour-des-iris-insee-tout-en-un/
 
-Go to the `data` directory and then:
+### Setup Postgresql PoistGIS Git and Unzip
 
-* `./01-download-data.sh`
+You have to install postgreSQL and PostGIS. For Debian 8:
 
-You have to install postgreSQL and PostGIS. For Debian:
+    sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
-    sudo apt-get install postgresql postgis
+    sudo apt-get update
+    
+    sudo apt-get install postgresql postgis git unzip
+    
+    sudo service postgresql restart
 
-Create a database name `pyris` with:
+### Setup Pyris
 
-* `02-create-database.sh`
-* and `03-insert-data.sh` to insert data
+    git clone https://github.com/flaborde/pyris.git
+    
+    cd pyris && mkdir data
+    
+    cd bin
+    
+    ./import-data.sh
+
 
 You have to be a PostgreSQL superuser to create the postgis extension for your
 database. If it's not the case, you can do:
