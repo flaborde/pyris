@@ -35,7 +35,7 @@ You have to install postgreSQL and PostGIS. For Debian 8:
     
     cd bin
     
-    ./import-data.sh
+    ./import-data.sh  --gosu-postgres
 
 
 You have to be a PostgreSQL superuser to create the postgis extension for your
