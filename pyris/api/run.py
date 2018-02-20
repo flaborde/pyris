@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import sys
-import settings
 from pyris.api import create_app
 
 app = create_app()
