@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 from flask import Blueprint, jsonify, render_template
 from flask_restplus import fields
-from flask.ext.restplus import Resource, Api, apidoc
+from flask_restplus import Resource, Api, apidoc
 
 from pyris import address
 from pyris.api import extract
