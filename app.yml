@@ -4,11 +4,11 @@ flask:
     LOG_LEVEL: debug
 
 database:
-    # DBNAME: DBNAME
-    USER: USERNAME
-    # PASSWORD: PASSWORD
-    # HOST: HOST
-    # PORT: PORT
+    DBNAME: pyris
+    USER: postgres
+    PASSWORD: myPassword
+    HOST: localhost
+    PORT: 5432
 
 uwsgi:
     master: true
@@ -21,5 +21,3 @@ uwsgi:
     need-app: true
     catch: exceptions=true
     touch: reload=~/pyris-app.reload
-    daemonize: /var/log/uwsgi/app/pyris.log
-    env: PYRIS_APP_SETTINGS=~/src/pyris/app.yml
