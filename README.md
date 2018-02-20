@@ -61,15 +61,43 @@ You can:
 * `URL/search/q=place de la bourse Bordeaux` to get the IRIS data from a
   specific address
 
+## app.yml file
+
+```yml
+flask:
+    PROPAGATE_EXCEPTIONS: True
+    DEBUG: True
+    LOG_LEVEL: debug
+
+database:
+    DBNAME: pyris
+    USER: postgres
+    PASSWORD: myPassword
+    HOST: localhost
+    PORT: 5432
+
+uwsgi:
+    master: true
+    pythonpath: ~/src/pyris
+    socket: localhost:8855
+    module: pyris.api.wsgi:app
+    processes: 1
+    enable-threads: true
+    protocol: uwsgi
+    need-app: true
+    catch: exceptions=true
+    touch: reload=~/pyris-app.reload
+```
+
 ## Launch the Web App
 
 First, download the few CSS & JavaScript dependencies with a `bower install`
 (just a Bootstrap and jQuery).
 
 Then :
-`> gunicorn -b 127.0.0.1:5555 pyris.api.run:app`
+`> gunicorn -b 0.0.0.0:5555 pyris.api.run:app`
 or
-`> gunicorn -b 127.0.0.1:5555 --env PYRIS_APP_SETTINGS=./appdev.yml pyris.api.run:app`
+`> gunicorn -b 0.0.0.0:5555 --env PYRIS_APP_SETTINGS=./appdev.yml pyris.api.run:app`
 if you have to specify db credentials or logging Flask app configuration.
 
 See an [example of a app.yml file](https://github.com/garaud/pyris/blob/master/app.yml)
